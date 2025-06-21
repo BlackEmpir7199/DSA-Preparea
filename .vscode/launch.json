@@ -1,0 +1,20 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "cppvsdbg",
+      "request": "launch",
+      "name": "Debug C++ Executable",
+      "program": "${workspaceFolder}/${input:executablePath}",
+      "stopAtEntry": true,
+      "preLaunchTask": "C/C++: g++.exe build active file"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "executablePath",
+      "type": "promptString",
+      "description": "Additionals/Build and Learn/Maze Explorer AI/maze_explorer.exe"
+    }
+  ]
+}
