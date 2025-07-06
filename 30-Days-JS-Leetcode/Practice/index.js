@@ -1,14 +1,10 @@
-// let person = {
-
-//     name : "ram",
-//     age : 20    
-// };
-
-// console.log(Object.entries(person));
 
 
-const {a, ...other} = {a:1, b:2, c:3};
+function orderTea(){
+    return function (){
+        return `chai is cooking`;
+    }
+}
 
 
-console.log(a);
-console.log(other);
+console.log(orderTea());
