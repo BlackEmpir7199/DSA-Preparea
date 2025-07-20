@@ -16,6 +16,20 @@ class TreeNode
 };
 
 
+// This method follows dfs .. ie it goes deep down to filling each nodes left child first -> then right child -> then comes recursion moves up the level and does the same 
+TreeNode* recurseGod(){
+    int x;
+    cin >> x;
+    if(x==-1) return NULL;
+    
+    TreeNode* node = new TreeNode(x);
+
+    node->left = recurseGod();
+    node->right = recurseGod();
+
+    return node;
+}
+
 void inorder(TreeNode* root){
     if(!root) return;
 
@@ -27,32 +41,34 @@ void inorder(TreeNode* root){
 int main()
 {
     
-    int x;
-    cin >> x;
-    queue<TreeNode*> q;
-    TreeNode* root = new TreeNode(x);
-    q.push(root);
+    // int x;
+    // cin >> x;
+    // queue<TreeNode*> q;
+    // TreeNode* root = new TreeNode(x);
+    // q.push(root);
 
-    // basically a level order insert method
-    while(!q.empty()){
+    //Method 1: basically a level order insert method
+    // while(!q.empty()){
         
-        TreeNode* node = q.front();
-        q.pop();
+    //     TreeNode* node = q.front();
+    //     q.pop();
         
-        cin >> x;
-        if(x!=-1){
-            node->left = new TreeNode(x);
-            q.push(node->left);
-        }
+    //     cin >> x;
+    //     if(x!=-1){
+    //         node->left = new TreeNode(x);
+    //         q.push(node->left);
+    //     }
 
-        cin >> x;
-        if(x!=-1){
-            node->right = new TreeNode(x);
-            q.push(node->right);
-        }
+    //     cin >> x;
+    //     if(x!=-1){
+    //         node->right = new TreeNode(x);
+    //         q.push(node->right);
+    //     }
 
-    }
+    // }
 
+    // Method 2: Enters the God : Recursion!
+    TreeNode* root=recurseGod();
 
     inorder(root);
 
