@@ -69,7 +69,7 @@ int main()
 
     // Method 2: Enters the God : Recursion!
     TreeNode* root=recurseGod();
-
+    vector<int> vc;
     inorder(root);
 
     return 0;
