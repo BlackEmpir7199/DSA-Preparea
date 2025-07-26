@@ -71,6 +71,15 @@ Node* insertLoop(Node* root, int val){
     return root;
 }
 
+// find the node using recursion
+int find(Node* root,int val){
+    if(!root) return -1;
+    if(root->val == val) return 1;
+    if(root->val>val) return find(root->left,val);
+    return find(root->right,val);
+}
+
+
 int main(){
     int arr[6] = {5,4,2,1,25,9};
 
@@ -81,5 +90,6 @@ int main(){
     }
 
     inOrder(root);
+    cout << find(root,4) << "<-find"; 
     return 0;   
 }
