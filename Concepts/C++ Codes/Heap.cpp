@@ -38,6 +38,45 @@ class MaxHeap{
 
         }
 
+        void HeapifyDown(int idx){
+            int largest = idx;
+            int rightChild = 2*idx+1;
+            int leftChild = 2*idx+2;
+
+
+            // finds the largest element's idx to replace to the currrent temp root
+            if(leftChild<size && arr[leftChild]>arr[largest]){
+                largest = leftChild;
+            }
+
+            if(rightChild<size && arr[rightChild]>arr[largest]){
+                largest = rightChild;
+            }
+
+            // when there is still a replacment available, repalce and recurse
+            if(largest!=idx){
+                swap(arr[largest],arr[idx]);
+                HeapifyDown(largest);
+            }
+
+        }
+
+        void remove(){
+            if(size==0){
+                cout<<"Heap Underflow"<< endl;
+                return;
+            }
+
+            int removedRoot = arr[0];
+            arr[0] = arr[size-1];
+            size--;
+
+            HeapifyDown(0);
+
+            cout << removedRoot << " Has been removed" << endl;
+
+        }
+
         void print(){
             for(int i=0;i<size;i++){
                 cout << arr[i] << " ";
@@ -48,12 +87,23 @@ class MaxHeap{
 
 
 int main(){
-    MaxHeap h(6);
-    h.insert(25);
-    h.insert(30);
-    h.insert(50);
-    h.insert(23);
-    h.insert(75);
+
+    //Ex arr : [20, 15, 18, 10, 12, 16,5]
+
+    // insertion
+    MaxHeap h(7);
+    h.insert(20);
+    h.insert(15);
+    h.insert(18);
+    h.insert(10);
+    h.insert(12);
+    h.insert(16);
+    h.insert(5);
     h.print();
+
+    //after removal
+    h.remove();
+    h.print();
+    
     return 0;
 }   
