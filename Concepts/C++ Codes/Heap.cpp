@@ -1,138 +1,148 @@
 #include <iostream>
+#include <vector>
 using namespace std;
 
-class MaxHeap
-{
+class Heap {
+    vector<int> heap;
+    bool isMinHeap;
+
+    // Helper function to get parent index
+    int parent(int i) { return (i - 1) / 2; }
+    int left(int i) { return 2 * i + 1; }
+    int right(int i) { return 2 * i + 2; }
+
+    // Compare function based on heap type
+    bool compare(int a, int b) {
+        return isMinHeap ? a < b : a > b;
+    }
+
+    // Heapify down from index i
+    void heapifyDown(int i) {
+        int leftChild = left(i);
+        int rightChild = right(i);
+        int extremum = i;
+
+        if (leftChild < heap.size() && compare(heap[leftChild], heap[extremum]))
+            extremum = leftChild;
+        if (rightChild < heap.size() && compare(heap[rightChild], heap[extremum]))
+            extremum = rightChild;
+
+        if (extremum != i) {
+            swap(heap[i], heap[extremum]);
+            heapifyDown(extremum);
+        }
+    }
+
+    // Heapify up from index i
+    void heapifyUp(int i) {
+        while (i != 0 && compare(heap[i], heap[parent(i)])) {
+            swap(heap[i], heap[parent(i)]);
+            i = parent(i);
+        }
+    }
+
 public:
-    int *arr;
-    int size;
-    int capacity;
-
-    MaxHeap(int cap)
-    {
-        arr = new int[cap];
-        size = 0;
-        capacity = cap;
+    // Constructor: isMinHeap flag to determine heap type
+    Heap(bool minHeap = true) {
+        isMinHeap = minHeap;
     }
 
-    void buildHeap(int inputArr[], int n)
-    {
-        for (int i = 0; i < n; i++)
-        {
-            arr[i] = inputArr[i];
-        }
-        size = n;
-        capacity = n;
-        build();
+    void push(int val) {
+        heap.push_back(val);
+        heapifyUp(heap.size() - 1);
     }
 
-    void insert(int data)
-    {
-        if (size == capacity)
-        {
-            cout << "Heap Overflow" << endl;
-            return;
-        }
-
-        // insert data and increment size
-        arr[size] = data;
-        int idx = size;
-        size++;
-
-        // insertion logic to maintain max heap property
-        int parentIdx = (idx - 1) / 2;
-        while (idx > 0 && arr[parentIdx] < arr[idx])
-        {
-            swap(arr[parentIdx], arr[idx]);
-            idx = parentIdx;
-            parentIdx = (idx - 1) / 2;
-        }
-        // print to the user
-        cout << arr[idx] << " Has been inserted." << endl;
+    int top() {
+        if (heap.empty()) throw runtime_error("Heap is empty");
+        return heap[0];
     }
 
-    void HeapifyDown(int idx)
-    {
-        int largest = idx;
-        int rightChild = 2 * idx + 2;
-        int leftChild = 2 * idx + 1;
+    void pop() {
+        if (heap.empty()) throw runtime_error("Heap is empty");
+        heap[0] = heap.back();
+        heap.pop_back();
+        if (!heap.empty())
+            heapifyDown(0);
+    }
 
-        // finds the largest element's index to replace the current temp root
-        if (leftChild < size && arr[leftChild] > arr[largest])
-        {
-            largest = leftChild;
-        }
-        if (rightChild < size && arr[rightChild] > arr[largest])
-        {
-            largest = rightChild;
-        }
-        // when there is still a replacement available, replace and recurse
-        if (largest != idx)
-        {
-            swap(arr[largest], arr[idx]);
-            HeapifyDown(largest);
+    // Build heap from arbitrary array
+    void buildHeap(const vector<int>& arr) {
+        heap = arr;
+        for (int i = (heap.size() / 2) - 1; i >= 0; i--) {
+            heapifyDown(i);
         }
     }
 
-    void remove()
-    {
-        if (size == 0)
-        {
-            cout << "Heap Underflow" << endl;
-            return;
-        }
-        int removedRoot = arr[0];
-        arr[0] = arr[size - 1];
-        size--;
-        HeapifyDown(0);
-        cout << removedRoot << " Has been removed" << endl;
+    int size() {
+        return heap.size();
     }
 
-    void build()
-    {
-        int parentIdx = (size / 2) - 1;
-        for (int i = parentIdx; i >= 0; i--)
-        {
-            HeapifyDown(i);
+    // Increase key for max heap (decrease for min heap)
+    void increaseKey(int i, int newVal) {
+        if (isMinHeap) {
+            if (newVal > heap[i]) {
+                heap[i] = newVal;
+                heapifyDown(i);
+            } else {
+                // newVal is smaller or equal, so heapify up
+                heap[i] = newVal;
+                heapifyUp(i);
+            }
+        } else {
+            if (newVal < heap[i]) {
+                heap[i] = newVal;
+                heapifyDown(i);
+            } else {
+                heap[i] = newVal;
+                heapifyUp(i);
+            }
         }
     }
 
-    // Heap sort runs in O(n log n) - but not stable (duplicates order might not be the same as insertion order)
-    void HeapSort()
-    {
-        int originalSize = size;
-        for (int i = size - 1; i > 0; i--)
-        {
-            // this swap takes the largest element to the end each time this is done
-            swap(arr[0], arr[i]);
-            size--; // Decrease the size for heapify down
-            // Heapify down takes i as the limiting size, this is for optimization since the last portion will be sorted
-            HeapifyDown(0);
-        }
-        size = originalSize; // Restore the original size
+    // Decrease key for max heap (increase for min heap)
+    void decreaseKey(int i, int newVal) {
+        increaseKey(i, newVal); // Handles both cases due to logic above
     }
 
-    void print()
-    {
-        for (int i = 0; i < size; i++)
-        {
-            cout << arr[i] << " ";
-        }
-        cout << endl;
+    vector<int> getHeap() {
+        return heap;
     }
 };
 
-int main()
-{
-    // Example array: [20, 15, 18, 10, 12, 16, 5]
-    // Insertion
-    int arr[6] = {20, 15, 18, 2, 4, 1};
-    MaxHeap h(6);
-    h.buildHeap(arr, 6);
-    h.print();
-    // After sort
-    h.HeapSort();
-    h.print();
+// Heap Sort using max heap
+void heapSort(vector<int>& arr) {
+    Heap maxHeap(false); // max heap
+    maxHeap.buildHeap(arr);
+    for (int i = arr.size() - 1; i >= 0; --i) {
+        arr[i] = maxHeap.top();
+        maxHeap.pop();
+    }
+}
+
+int main() {
+    // Example usage:
+
+    vector<int> data = {3, 1, 6, 5, 2, 4};
+    Heap minHeap(true);
+    minHeap.buildHeap(data);
+    cout << "Min heap after build: ";
+    for (int v : minHeap.getHeap()) cout << v << " ";
+    cout << "\n";
+
+    minHeap.push(0);
+    cout << "Min heap after push(0): ";
+    for (int v : minHeap.getHeap()) cout << v << " ";
+    cout << "\n";
+
+    minHeap.pop();
+    cout << "Min heap after pop(): ";
+    for (int v : minHeap.getHeap()) cout << v << " ";
+    cout << "\n";
+
+    cout << "Heap sort: ";
+    heapSort(data);
+    for (int v : data) cout << v << " ";
+    cout << "\n";
 
     return 0;
 }
