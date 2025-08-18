@@ -53,7 +53,7 @@ private:
 
         // complete overlap
         if(l<=start && r>=end){
-            tree[node]=val*(end-start+1);
+            tree[node]+=val*(end-start+1);
 
             if(start!=end){
                 lazy[node*2+1]+=val;
@@ -81,8 +81,8 @@ private:
         }
 
         int mid = (start+end)/2;
-        int lSum = query(node*2+2,start,mid,l,r);
-        int rSum = query(node*2+1,mid+1,end,l,r);
+        int lSum = query(node*2+1,start,mid,l,r);
+        int rSum = query(node*2+2,mid+1,end,l,r);
         return lSum+rSum;
         
     }
@@ -95,10 +95,23 @@ public:
         lazy.resize(n * 4, 0);
         build(arr, 0, 0, n - 1);
     }
+
+    int rangeQuery(int l, int r)
+    {
+        return query(0, 0, n - 1, l, r);
+    }
+
+    void update(int l, int r, int val)
+    {
+        update(0, 0, n - 1, l, r, val);
+    }
 };
 
 int main()
 {
+    vector<int> arr = {1, 2, 3, 4, 5, 6, 7, 8};
+    SegmentTree sgt(arr);
 
+    cout << sgt.rangeQuery(0, 1);
     return 0;
 }
